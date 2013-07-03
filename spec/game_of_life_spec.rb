@@ -1,98 +1,92 @@
 require 'game_of_life'
 
 describe GameOfLife::Cell do
-  context 'alive' do
-    subject { described_class.new(true) }
-
-    it 'is alive' do
-      subject.alive?.should be_true
+ 
+  context 'less than two neighbors' do
+    before do
+      GameOfLife::Board.stub(:number_of_living_neighbors).with(0, 0).and_return(1)
     end
 
-    context 'dies if no neighbors alive' do
-      subject { described_class.new(true).tick }
+    context 'and is alive' do
+      subject { described_class.new(true).tick.alive? }
 
-      its(:alive?) { should be_false }
-    end
-
-    context 'dies if one neighbor is alive' do
-      let (:alive) { described_class.new(true) }
-
-      subject { described_class.new(true, [alive]).tick }
-
-      its(:alive?) { should be_false }
-    end
-
-    context 'dies if more than three neighbors alive' do
-      let (:alive) { described_class.new(true) }
-
-      subject { described_class.new(true, [alive, alive, alive, alive]).tick }
-
-      its(:alive?) { should be_false }
-    end
-
-    context 'lives if two neighbors' do
-      let (:alive) { described_class.new(true) }
-
-      subject { described_class.new(true, [alive, alive]).tick }
-
-      its(:alive?) { should be_true }
-    end
-
-    context 'lives if three neighbors' do
-      let (:alive) { described_class.new(true) }
-
-      subject { described_class.new(true, [alive, alive, alive]).tick }
-
-      its(:alive?) { should be_true }
-    end
-  end
-
-  context 'dead' do
-    subject { GameOfLife::Cell.new(false) }
-
-    it 'should not be alive' do
-      subject.alive?.should be_false
-    end
-
-    context 'should stay dead when two neighbors' do
-      let (:alive) { described_class.new(true) }
-
-      subject { described_class.new(false, [alive, alive]).tick }
-
-      its(:alive?) { should be_false }
-    end
-
-    context 'becomes alive when three alive neighbors' do
-      let (:alive) { described_class.new(true) }
-
-      subject { described_class.new(false, [alive, alive, alive]).tick }
-
-      its(:alive?) { should be_true }
-    end
-  end
-
-  context 'has neighbors' do
-    context 'all neighbors dead' do
-      subject { described_class.new(false) }
-
-      it 'has no alive neighbors' do
-        subject.number_alive_neighbors.should == 0
+      it 'starves' do
+        subject.should be_false
       end
     end
 
-    context 'alive neighbors' do
-      let (:alive1) { described_class.new(true) }
-      let (:alive2) { described_class.new(true) }
-      let (:dead) { described_class.new(false) }
+    context 'and is dead' do
+      subject { described_class.new(false).tick.alive? }
 
-      subject { described_class.new(false, [alive1, dead, alive2]) }
-
-      it 'has two alive neighbors' do
-        subject.number_alive_neighbors.should == 2
+      it 'remains dead' do
+        subject.should be_false
       end
-
     end
   end
 
+  context 'two neighbors' do
+    before do
+      GameOfLife::Board.stub(:number_of_living_neighbors).and_return(2)
+    end
 
+    context 'and is alive' do
+      subject { described_class.new(true).tick.alive? }
+
+      it 'remains alive' do
+        subject.should be_true
+      end
+    end
+
+    context 'and is dead' do
+      subject { described_class.new(false).tick.alive? }
+
+      it 'remains dead' do
+        subject.should be_false
+      end
+    end
+  end
+
+  context 'three neighbors' do
+    before do
+      GameOfLife::Board.stub(:number_of_living_neighbors).and_return(3)
+    end
+
+    context 'and is alive' do
+      subject { described_class.new(true).tick.alive? }
+
+      it 'remains alive' do
+        subject.should be_true
+      end
+    end
+
+    context 'and is dead' do
+      subject { described_class.new(false).tick.alive? }
+
+      it 'spawns' do
+        subject.should be_true
+      end
+    end
+  end
+
+  context 'more than three neighbors' do
+    before do
+      GameOfLife::Board.stub(:number_of_living_neighbors).and_return(6)
+    end
+
+    context 'and is alive' do
+      subject { described_class.new(true).tick.alive? }
+
+      it 'dies form overcrowding' do
+        subject.should be_false
+      end
+    end
+
+    context 'and is dead' do
+      subject { described_class.new(false).tick.alive? }
+
+      it 'remains dead' do
+        subject.should be_false
+      end
+    end
+  end
 end

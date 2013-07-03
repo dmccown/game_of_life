@@ -1,11 +1,17 @@
 require "game_of_life/version"
 
 module GameOfLife
-  class Cell
+  class Board
+    def number_of_living_neighbors
 
-    def initialize(alive, neighbors=[])
+    end
+  end
+
+  class Cell
+    def initialize(alive, x=0, y=0) 
       @alive = alive
-      @neighbors = neighbors
+      @x = x
+      @y = y
     end
 
     def alive?
@@ -21,12 +27,7 @@ module GameOfLife
     end
 
     def number_alive_neighbors
-      count = 0;
-      @neighbors.each do |cell|
-        count += 1 if cell.alive?
-      end
-      count
+      GameOfLife::Board.number_of_living_neighbors @x, @y
     end
-
   end
 end
