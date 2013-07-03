@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = GameOfLife::VERSION
   spec.authors       = ["David McCown"]
   spec.email         = ["dmccown@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Conway's game of life implementation}
+  spec.summary       = %q{See readme}
   spec.homepage      = ""
   spec.license       = "MIT"
 
