@@ -3,6 +3,8 @@ require 'cell'
 module GameOfLife
   class Board
     def initialize(length, height) 
+      @length = length
+      @height = height
       @arr = Array.new(length) { |x| Array.new(height) { |y| GameOfLife::Cell.new(false, x, y) } }
     end
 
@@ -16,6 +18,14 @@ module GameOfLife
           yield cell
         end
       end
+    end
+
+    def cycle_game 
+      board = Board.new @length, @height
+      self.each do | cell |
+        board[cell.x][cell.y] = cell.tick self
+      end
+      board
     end
 
     def each_with_index
@@ -40,7 +50,7 @@ module GameOfLife
 
     def add_living(x, y)
       val = 0
-      if (0..@arr.size).member?(x) && (0..@arr[0].size).member?(y)
+      if (0..@length).member?(x) && (0..@height).member?(y)
         val = @arr[x][y].alive? ? 1 : 0
       end
       val

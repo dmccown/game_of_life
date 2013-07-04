@@ -20,6 +20,28 @@ describe GameOfLife::Board do
     end
   end
 
+  context 'cycle game' do
+    let(:new_cell) { mock 'new cell' }
+    let(:cell) { mock 'cell', tick: new_cell, x: 0, y: 0 }
+    subject { described_class.new(1, 1) }
+
+    before do
+      subject.each_with_index do | ignore, x, y |
+        subject[x][y] = cell
+      end
+    end
+
+    it 'should tick each cell' do
+      cell.should_receive(:tick)
+
+      subject.cycle_game
+    end
+
+    it 'should create a new board' do
+      subject.cycle_game[0][0].should == new_cell
+    end
+  end
+
   context 'counts number of living neighbors' do
 
     context 'no living neighbors' do
@@ -51,4 +73,5 @@ describe GameOfLife::Board do
       end
     end
   end
+
 end
