@@ -5,7 +5,7 @@ module GameOfLife
     def initialize(length, height) 
       @length = length
       @height = height
-      @arr = Array.new(length) { |x| Array.new(height) { |y| GameOfLife::Cell.new(false, x, y) } }
+      @arr = Array.new(length) { Array.new(height) { GameOfLife::Cell.new(false) } }
     end
 
     def [](x)
@@ -22,16 +22,16 @@ module GameOfLife
 
     def cycle_game 
       board = Board.new @length, @height
-      self.each do | cell |
-        board[cell.x][cell.y] = cell.tick self
+      self.each_with_index do | cell, x, y |
+        board[x][y] = cell.tick number_of_living_neighbors(x, y)
       end
       board
     end
 
     def each_with_index
-      @arr.each_with_index do | row, x_index |
-        row.each_with_index do | cell, y_index |
-          yield cell, x_index, y_index
+      @arr.each_with_index do | row, x|
+        row.each_with_index do | cell, y|
+          yield self[x][y], x, y
         end
       end
     end
@@ -42,7 +42,7 @@ module GameOfLife
       count += add_living(x-1, y)
       count += add_living(x-1, y+1)
       count += add_living(x, y-1)
-      count += add_living(x, y-1)
+      count += add_living(x, y+1)
       count += add_living(x+1, y-1)
       count += add_living(x+1, y)
       count += add_living(x+1, y+1)
@@ -50,19 +50,16 @@ module GameOfLife
 
     def add_living(x, y)
       val = 0
-      if (0..@length).member?(x) && (0..@height).member?(y)
+      if (0..@length-1).member?(x) && (0..@height-1).member?(y)
         val = @arr[x][y].alive? ? 1 : 0
       end
       val
     end
 
     def to_s
-      @arr.each do | row |
-        row.each do | cell |
-          print cell.to_s
-        end
-        puts "\n"
-      end
+      output = ""
+      @arr.each { | row | output += "#{row.join}\n" }
+      output
     end
   end
 end

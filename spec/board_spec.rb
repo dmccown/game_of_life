@@ -12,17 +12,17 @@ describe GameOfLife::Board do
       subject[1][1].should == cell
     end
 
-    it 'should have cells with correct coordinates' do
-      subject.each_with_index do | cell, x, y |
-        cell.x.should == x
-        cell.y.should == y
+    it 'should start with dead cells' do
+      subject.each do | cell |
+        cell.alive?.should be_false
       end
     end
+
   end
 
   context 'cycle game' do
     let(:new_cell) { mock 'new cell' }
-    let(:cell) { mock 'cell', tick: new_cell, x: 0, y: 0 }
+    let(:cell) { mock 'cell', tick: new_cell }
     subject { described_class.new(1, 1) }
 
     before do
@@ -54,22 +54,31 @@ describe GameOfLife::Board do
 
     context 'living neighbors' do
       let(:cell) { mock 'cell', :alive? => true }
-      subject { described_class.new(3, 3) }
+      subject { described_class.new(4, 4) }
 
       before do
+        subject[1][1] = cell
+        subject[1][2] = cell
+        subject[2][1] = cell
         subject[2][2] = cell
       end
 
       it 'should count all neighbors' do
         count = subject.number_of_living_neighbors 1, 1
 
-        count.should == 1
+        count.should == 3
+      end
+
+      it 'should count all neighbors' do
+        count = subject.number_of_living_neighbors 1, 2
+
+        count.should == 3
       end
 
       it 'should not exceed boundary' do
         count = subject.number_of_living_neighbors 0, 0
 
-        count.should == 0
+        count.should == 1
       end
     end
   end

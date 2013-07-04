@@ -1,19 +1,14 @@
 module GameOfLife
   class Cell
-    attr_reader :x, :y
-
-    def initialize(alive, x=0, y=0) 
+    def initialize(alive)
       @alive = alive
-      @x = x
-      @y = y
     end
 
     def alive?
       @alive
     end
 
-    def tick(board)
-      alive_neighbors = board.number_of_living_neighbors @x, @y
+    def tick(alive_neighbors)
       if alive?
         Cell.new(alive_neighbors == 2 || alive_neighbors == 3) 
       else
