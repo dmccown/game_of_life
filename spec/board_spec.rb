@@ -12,20 +12,10 @@ describe GameOfLife::Board do
       subject[1][1].should == cell
     end
 
-    it 'should have dead cells by default' do
-      subject.each do | row |
-        row.each do | cell|
-          cell.alive?.should be_false
-        end
-      end
-    end
-
     it 'should have cells with correct coordinates' do
-      subject.each_with_index do | row, x |
-        row.each_with_index do | cell, y |
-          cell.x.should == x
-          cell.y.should == y
-        end
+      subject.each_with_index do | cell, x, y |
+        cell.x.should == x
+        cell.y.should == y
       end
     end
   end
@@ -37,6 +27,27 @@ describe GameOfLife::Board do
 
       it 'returns 0' do
         subject.should == 0
+      end
+    end
+
+    context 'living neighbors' do
+      let(:cell) { mock 'cell', :alive? => true }
+      subject { described_class.new(3, 3) }
+
+      before do
+        subject[2][2] = cell
+      end
+
+      it 'should count all neighbors' do
+        count = subject.number_of_living_neighbors 1, 1
+
+        count.should == 1
+      end
+
+      it 'should not exceed boundary' do
+        count = subject.number_of_living_neighbors 0, 0
+
+        count.should == 0
       end
     end
   end

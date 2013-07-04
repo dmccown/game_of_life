@@ -12,18 +12,39 @@ module GameOfLife
 
     def each
       @arr.each do | row |
-        yield row
+        row.each do | cell |
+          yield cell
+        end
       end
     end
 
     def each_with_index
-      @arr.each_with_index do | row, index |
-        yield row, index
+      @arr.each_with_index do | row, x_index |
+        row.each_with_index do | cell, y_index |
+          yield cell, x_index, y_index
+        end
       end
     end
 
     def number_of_living_neighbors(x, y)
-      0
+      count = 0
+      count += add_living(x-1, y-1)
+      count += add_living(x-1, y)
+      count += add_living(x-1, y+1)
+      count += add_living(x, y-1)
+      count += add_living(x, y-1)
+      count += add_living(x+1, y-1)
+      count += add_living(x+1, y)
+      count += add_living(x+1, y+1)
     end
+
+    def add_living(x, y)
+      val = 0
+      if (0..@arr.size).member?(x) && (0..@arr[0].size).member?(y)
+        val = @arr[x][y].alive? ? 1 : 0
+      end
+      val
+    end
+
   end
 end
