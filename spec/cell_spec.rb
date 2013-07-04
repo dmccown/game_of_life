@@ -1,4 +1,4 @@
-require 'game_of_life'
+require 'cell'
 
 describe GameOfLife::Cell do
 

@@ -1,4 +1,4 @@
-require 'game_of_life'
+require 'board'
 
 describe GameOfLife::Board do
 
