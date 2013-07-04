@@ -20,5 +20,9 @@ module GameOfLife
         Cell.new(alive_neighbors == 3)
       end
     end
+    
+    def to_s
+      alive? ? 'O' : '.'
+    end
   end
 end

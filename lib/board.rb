@@ -56,5 +56,13 @@ module GameOfLife
       val
     end
 
+    def to_s
+      @arr.each do | row |
+        row.each do | cell |
+          print cell.to_s
+        end
+        puts "\n"
+      end
+    end
   end
 end
