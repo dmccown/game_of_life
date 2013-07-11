@@ -10,4 +10,11 @@ require 'game_of_life'
 args = ARGV.dup
 ARGV.clear
 
-GameOfLife.run(args)
+system('clear')
+
+GameOfLife.run(args) do | output, index |
+  puts "#{index}"
+  puts output
+  sleep 0.3
+  system('clear')
+end
