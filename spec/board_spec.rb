@@ -4,7 +4,7 @@ describe GameOfLife::Board do
 
   context 'populating cells' do
     let(:cell) { mock }
-    subject { described_class.new(3, 3) }
+    subject { described_class.new(3, 3, 0.1) }
 
     it 'can populate a cell' do
       subject[1][1] = cell
@@ -12,18 +12,12 @@ describe GameOfLife::Board do
       subject[1][1].should == cell
     end
 
-    it 'should start with dead cells' do
-      subject.each do | cell |
-        cell.alive?.should be_false
-      end
-    end
-
   end
 
   context 'cycle game' do
     let(:new_cell) { mock 'new cell' }
     let(:cell) { mock 'cell', tick: new_cell }
-    subject { described_class.new(1, 1) }
+    subject { described_class.new(1, 1, 0.1) }
 
     before do
       subject.each_with_index do | ignore, x, y |
@@ -43,9 +37,15 @@ describe GameOfLife::Board do
   end
 
   context 'counts number of living neighbors' do
+    let(:alive_cell) { mock 'alive', :alive? => true }
+    let(:dead_cell) { mock 'dead', :alive? => false }
+
+    before do
+      GameOfLife::Cell.stub(:new).and_return(dead_cell)
+    end
 
     context 'no living neighbors' do
-      subject { described_class.new(3, 3).number_of_living_neighbors(1, 1) }
+      subject { described_class.new(3, 3, 0.1).number_of_living_neighbors(1, 1) }
 
       it 'returns 0' do
         subject.should == 0
@@ -53,14 +53,13 @@ describe GameOfLife::Board do
     end
 
     context 'living neighbors' do
-      let(:cell) { mock 'cell', :alive? => true }
-      subject { described_class.new(4, 4) }
+      subject { described_class.new(4, 4, 0.1) }
 
       before do
-        subject[1][1] = cell
-        subject[1][2] = cell
-        subject[2][1] = cell
-        subject[2][2] = cell
+        subject[1][1] = alive_cell
+        subject[1][2] = alive_cell
+        subject[2][1] = alive_cell
+        subject[2][2] = alive_cell
       end
 
       it 'should count all neighbors' do

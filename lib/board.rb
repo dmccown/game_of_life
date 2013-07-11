@@ -2,10 +2,11 @@ require 'cell'
 
 module GameOfLife
   class Board
-    def initialize(length, height) 
+    def initialize(length, height, seed) 
       @length = length
       @height = height
-      @arr = Array.new(length) { Array.new(height) { GameOfLife::Cell.new(false) } }
+      @seed = seed
+      @arr = Array.new(length) { Array.new(height) { GameOfLife::Cell.new(seed > rand) } }
     end
 
     def [](x)
@@ -21,7 +22,7 @@ module GameOfLife
     end
 
     def cycle_game 
-      board = Board.new @length, @height
+      board = Board.new @length, @height, @seed
       self.each_with_index do | cell, x, y |
         board[x][y] = cell.tick number_of_living_neighbors(x, y)
       end
