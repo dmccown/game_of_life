@@ -17,7 +17,7 @@ module GameOfLife
     end
     
     def to_s
-      alive? ? 'O' : '.'
+      alive? ? 'O' : ' '
     end
   end
 end
